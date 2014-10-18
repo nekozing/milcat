@@ -1,4 +1,15 @@
-var Astar = (function(){
+var Astar = (function(global){
+	var PriorityQueue = global.Lib.PriorityQueue;
+	var _q = new PriorityQueue();
+	_q.setCmp(function(x, y){
+		if (x.d + x.h > y.d + y.h) {
+			return 1;
+		} else if (x.d + x.h < y.d + y.h) {
+			return -1;
+		} else {
+			return 0;
+		}
+	});
 	var o = {};
 	var STATEMASK = 0xff000000;
 	var BLOCK     = 0x01000000;
@@ -15,6 +26,17 @@ var Astar = (function(){
 	function _p(x, y) {
 		return {"x": x, "y": y};
 	}
+	function _createNode(x, y) {
+		var node = {};
+		node.x = x;
+		node.y = y;
+		node.d = abs(x - _start.x) + abs(y - _start.y);
+		mode.h = abs(x - _goal.x) + abs(y - _goal.y);
+		return node;
+	}
+	function _expand(x, y) {
+		
+	}
 	o.init = function (m, n) {
 		_grid = new Array(m);
 		for (i = 0; i < m; i++) {
@@ -30,6 +52,7 @@ var Astar = (function(){
 		}
 		_start = _p(x, y);
 		_grid[x][y] = START;
+		_q.enqueue(_createNode(x, y));
 	};
 	o.setGoal = function (x, y) {
 		if (_grid[x][y] != EMPTY) {
@@ -47,6 +70,12 @@ var Astar = (function(){
 	o.getGrid = function () {
 		return _grid;
 	};
+	o.search = function () {
+		var node = {};
+
+
+		// setTimeout(o.search, 500);
+	};
 	o.getStatus = function() {
 		if (!_start) {
 			return 0;
@@ -60,4 +89,4 @@ var Astar = (function(){
 		console.log(this);
 	};
 	return o;
-})();
+})(this);
