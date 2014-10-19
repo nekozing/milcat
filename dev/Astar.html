@@ -18,7 +18,7 @@ body {
 <script>
 var mousedown;
 var canvas = document.getElementById("canvas");
-Astar.init(10, 10);
+Astar.init(30, 30);
 GridGraph.mapGridToCanvas(Astar.getGrid(), canvas);
 GridGraph.addController("mousemove", function(x, y){
 	GridGraph.setHighLight(x, y);

@@ -1,8 +1,7 @@
 var GridGraph = (function(){
 	var o = {};
-	var COLORMASK = 0x00ffffff;
-	var DEFAULTWIDTH = 40;
-	var DEFAULTHEIGHT = 40;
+	var DEFAULTWIDTH = 20;
+	var DEFAULTHEIGHT = 20;
 	var _cellWidth = 0;
 	var _cellHeight = 0;
 	var _canvasWidth = 0;
@@ -19,8 +18,32 @@ var GridGraph = (function(){
 		_ctx.lineWidth = 1;
 		_ctx.stroke();
 	}
+	var BLOCK     = 0x01;
+	var EMPTY     = 0x02;
+	var ROUTE     = 0x04;
+	var SEARCHED  = 0x08;
+	var MARK      = 0x10;
+	var START     = 0x20;
+	var GOAL      = 0x40;
+	function _toColor(state) {
+		if (state & START) {
+			return "#cccc00";
+		} else if (state & GOAL) {
+			return "#00cccc";
+		} else if (state & ROUTE) {
+			return "#00cc00";
+		} else if (state & BLOCK) {
+			return "#000000";
+		} else if (state & SEARCHED) {
+			return "#cc0000";
+		} else if (state & MARK) {
+			return "#0000cc";
+		} else if (state & EMPTY) {
+			return "#ffffff";
+		} 
+	}
 	function _colorCell(x, y, color) {
-		var strColor = "#" + ("000000" + (color & COLORMASK).toString(16)).slice(-6);
+		var strColor = color;
 		_ctx.beginPath();
 		_ctx.rect(_cellWidth * x, _cellHeight * y, _cellWidth, _cellHeight);
 		_ctx.fillStyle = strColor;
@@ -60,13 +83,13 @@ var GridGraph = (function(){
 	o.renderCells = function () {
 		for (i = 0; i < _canvasHeight / _cellHeight; i++) {
 			for (j = 0; j < _canvasWidth / _cellWidth; j++) {
-				_colorCell(i, j, _grid[i][j]);
+				_colorCell(i, j, _toColor(_grid[i][j]));
 			}
 		}
 	};
 	o.renderHighLight = function () {
 		if (_highLight) {
-			_colorCell(_highLight.x, _highLight.y, 0x999999);
+			_colorCell(_highLight.x, _highLight.y, "#999999");
 		}
 	};
 	o.setHighLight = function (x, y) {
